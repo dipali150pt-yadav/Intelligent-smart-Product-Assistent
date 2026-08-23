@@ -20,7 +20,6 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:4173",
-  // Set FRONTEND_URL in Railway env vars to your Vercel URL, e.g. https://your-app.vercel.app
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
@@ -29,7 +28,11 @@ app.use(
     origin: (origin, callback) => {
       // Allow server-to-server / curl requests (no origin header)
       if (!origin) return callback(null, true);
+      // Allow all origins in development or if no FRONTEND_URL is set
+      if (!process.env.FRONTEND_URL) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
+      // Allow all vercel.app subdomains automatically
+      if (origin.endsWith(".vercel.app")) return callback(null, true);
       callback(new Error(`CORS: origin ${origin} not allowed`));
     },
     credentials: true,
