@@ -40,6 +40,20 @@ app.use(
 );
 app.use(express.json({ limit: "25mb" }));
 app.use(express.urlencoded({ extended: true, limit: "25mb" }));
+app.use(express.text({ type: "text/plain", limit: "25mb" }));
+// Handle requests where proxy strips Content-Type header
+app.use((req, res, next) => {
+  if (req.method === "POST" && !req.headers["content-type"]) {
+    req.headers["content-type"] = "application/json";
+  }
+  next();
+});
+app.use((req, res, next) => {
+  if (typeof req.body === "string") {
+    try { req.body = JSON.parse(req.body); } catch {}
+  }
+  next();
+});
 
 // ── Public routes (no auth required) ─────────────────────────────────────────
 app.get("/api/health", (req, res) => {
