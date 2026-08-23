@@ -1,6 +1,10 @@
 import { getStoredToken } from "./auth.js";
 
-const API_BASE = "/api";
+// In production (Vercel), VITE_API_BASE_URL points to the Railway backend.
+// In local dev, Vite's proxy rewrites /api → localhost:5000, so we keep "/api".
+const API_BASE = import.meta.env.VITE_API_BASE_URL
+  ? `${import.meta.env.VITE_API_BASE_URL}/api`
+  : "/api";
 
 /**
  * Wrapper around fetch that automatically attaches the JWT Bearer token.
