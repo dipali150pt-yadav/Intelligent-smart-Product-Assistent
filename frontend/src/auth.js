@@ -1,6 +1,12 @@
 const TOKEN_STORAGE_KEY = "product_support_token";
 const USER_STORAGE_KEY = "product_support_user";
 
+// In production (Vercel), VITE_API_BASE_URL points to the Render backend.
+// In local dev, Vite proxy rewrites /api → localhost:5000.
+const API_BASE = import.meta.env.VITE_API_BASE_URL
+  ? `${import.meta.env.VITE_API_BASE_URL}/api`
+  : "/api";
+
 export function getStoredToken() {
   return localStorage.getItem(TOKEN_STORAGE_KEY) || "";
 }
@@ -26,7 +32,7 @@ export function clearStoredSession() {
 }
 
 export async function loginWithCredentials(identifier, password) {
-  const res = await fetch("/api/auth/login", {
+  const res = await fetch(`${API_BASE}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ identifier, password }),
@@ -42,7 +48,7 @@ export async function loginWithCredentials(identifier, password) {
 }
 
 export async function registerWithCredentials({ name, username, email, password, role = "user" }) {
-  const res = await fetch("/api/auth/register", {
+  const res = await fetch(`${API_BASE}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, username, email, password, role }),
@@ -58,7 +64,7 @@ export async function registerWithCredentials({ name, username, email, password,
 }
 
 export async function loginWithDemo(role = "admin") {
-  const res = await fetch("/api/auth/demo", {
+  const res = await fetch(`${API_BASE}/auth/demo`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ role }),
@@ -78,7 +84,7 @@ export async function checkSession() {
   if (!token) return null;
 
   try {
-    const res = await fetch("/api/auth/me", {
+    const res = await fetch(`${API_BASE}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
