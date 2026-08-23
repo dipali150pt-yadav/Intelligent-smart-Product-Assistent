@@ -3,14 +3,13 @@ services:
     name: intelligent-product-assistant-api
     runtime: node
     rootDir: backend
+
     buildCommand: npm install
     startCommand: node src/server.js
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 5000
       - key: JWT_SECRET
         sync: false        # you set this manually in Render dashboard
       - key: GROK_API_KEY
