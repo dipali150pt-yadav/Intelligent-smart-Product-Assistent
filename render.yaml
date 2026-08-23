@@ -4,7 +4,7 @@ services:
     runtime: node
     rootDir: backend
 
-    buildCommand: npm install
+    buildCommand: npm install && npm rebuild sqlite3
     startCommand: node src/server.js
     healthCheckPath: /api/health
     envVars:
